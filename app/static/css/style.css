@@ -1,0 +1,56 @@
+/* Custom CSS for Book Notes App */
+:root {
+    --bs-primary: #4361ee;
+    --bs-primary-rgb: 67, 97, 238;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navbar */
+.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+.glass-navbar {
+    background-color: rgba(67, 97, 238, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Cards */
+.book-card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Custom Input */
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+    border-color: rgba(67, 97, 238, 0.5);
+    background-color: #fff !important;
+}
+
+.empty-state {
+    background-color: #fff;
+    border-radius: 1rem;
+    border: 2px dashed #dee2e6;
+}

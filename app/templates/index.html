@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}筆記列表 - 讀書筆記本{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 mt-3">
+    <h2 class="fw-bold mb-3 mb-md-0 text-dark">我的閱讀軌跡</h2>
+    <a href="{{ url_for('book_bp.new_book') }}" class="btn btn-primary rounded-pill shadow-sm px-4 py-2 fw-bold">
+        <i class="bi bi-plus-lg me-2"></i>寫新筆記
+    </a>
+</div>
+
+{% if books %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for book in books %}
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm book-card transition-all bg-white">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h4 class="card-title fw-bold text-dark text-truncate mb-0" title="{{ book.title }}">
+                        {{ book.title }}
+                    </h4>
+                    {% if book.rating %}
+                    <div class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-50 rounded-pill px-2 py-1 ms-2 fs-6">
+                        <i class="bi bi-star-fill me-1"></i>{{ book.rating }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% if book.category %}
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-1">
+                        {{ book.category }}
+                    </span>
+                    {% endif %}
+                    {% if book.read_date %}
+                    <span class="text-muted small d-flex align-items-center mt-1">
+                        <i class="bi bi-calendar3 me-1"></i>{{ book.read_date }}
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <p class="card-text text-muted line-clamp-3 mb-4 flex-grow-1" style="line-height: 1.6;">
+                    {{ book.notes if book.notes else '尚無心得筆記...' }}
+                </p>
+                
+                <a href="{{ url_for('book_bp.book_detail', id=book.id) }}" class="btn btn-outline-primary w-100 rounded-pill mt-auto fw-bold">
+                    閱讀完整心得
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 empty-state my-5">
+    <div class="display-1 text-primary mb-4 opacity-50">
+        <i class="bi bi-journal-bookmark"></i>
+    </div>
+    <h3 class="fw-bold text-dark mb-3">目前尚無筆記</h3>
+    <p class="text-muted mb-4 fs-5">看起來您還沒有記錄任何書本，現在就開始寫下您的第一篇心得吧！</p>
+    <a href="{{ url_for('book_bp.new_book') }}" class="btn btn-primary rounded-pill px-5 py-3 shadow fs-5 fw-bold mt-2">
+        <i class="bi bi-pencil-square me-2"></i>開始記錄
+    </a>
+</div>
+{% endif %}
+{% endblock %}

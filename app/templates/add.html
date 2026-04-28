@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}新增筆記 - 讀書筆記本{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-0 pt-4 pb-0 px-4 px-md-5">
+                <div class="d-flex align-items-center mb-3">
+                    <a href="{{ url_for('book_bp.index') }}" class="btn btn-sm btn-light rounded-circle me-3 text-secondary" title="返回首頁">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                    </a>
+                    <h3 class="fw-bold mb-0 text-dark">新增讀書筆記</h3>
+                </div>
+                <hr class="mt-4 mb-0 opacity-10">
+            </div>
+            <div class="card-body p-4 p-md-5 pt-4">
+                <form action="{{ url_for('book_bp.create_book') }}" method="POST">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label for="title" class="form-label fw-bold text-dark fs-5">書名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0 shadow-none px-4 py-3" id="title" name="title" value="{{ title|default('') }}" placeholder="例如：原子習慣" required autofocus>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="read_date" class="form-label fw-semibold text-secondary">閱讀日期</label>
+                            <input type="date" class="form-control form-control-lg bg-light border-0 shadow-none px-4" id="read_date" name="read_date" value="{{ read_date|default('') }}">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="category" class="form-label fw-semibold text-secondary">書籍分類</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0 shadow-none px-4" id="category" name="category" value="{{ category|default('') }}" placeholder="例如：自我成長、商業理財">
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-secondary d-block">評分</label>
+                            <div class="rating-input d-flex gap-2" id="starRating">
+                                {% for i in range(1, 6) %}
+                                <div class="form-check form-check-inline m-0 p-0">
+                                    <input class="form-check-input d-none" type="radio" name="rating" id="rating{{ i }}" value="{{ i }}" {% if rating|string == i|string %}checked{% endif %}>
+                                    <label class="form-check-label fs-3 text-muted star-label transition-all" style="cursor:pointer;" for="rating{{ i }}" data-value="{{ i }}">
+                                        <i class="bi bi-star-fill"></i>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="notes" class="form-label fw-bold text-dark fs-5">讀後心得</label>
+                            <textarea class="form-control bg-light border-0 shadow-none p-4" id="notes" name="notes" rows="8" placeholder="寫下您的想法、重點摘錄或是任何啟發...">{{ notes|default('') }}</textarea>
+                        </div>
+                        
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm fw-bold py-3">
+                                <i class="bi bi-save me-2"></i>儲存筆記
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star-label');
+    const radios = document.querySelectorAll('input[name="rating"]');
+    
+    // 初始化顯示
+    let currentRating = 0;
+    radios.forEach(radio => {
+        if(radio.checked) currentRating = parseInt(radio.value);
+    });
+    updateStars(currentRating);
+
+    stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            updateStars(parseInt(this.getAttribute('data-value')));
+        });
+        star.addEventListener('mouseout', function() {
+            updateStars(currentRating);
+        });
+        star.addEventListener('click', function() {
+            currentRating = parseInt(this.getAttribute('data-value'));
+            radios[currentRating - 1].checked = true; // 確保對應的 radio 被選中
+            updateStars(currentRating);
+        });
+    });
+
+    function updateStars(value) {
+        stars.forEach(star => {
+            if(parseInt(star.getAttribute('data-value')) <= value) {
+                star.classList.replace('text-muted', 'text-warning');
+            } else {
+                star.classList.replace('text-warning', 'text-muted');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - 讀書筆記本{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-4">
+    <div class="col-lg-10">
+        <!-- 導覽列麵包屑 -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-transparent p-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('book_bp.index') }}" class="text-decoration-none text-primary fw-medium"><i class="bi bi-house-door me-1"></i>首頁</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+            <div class="card-body p-4 p-md-5">
+                <!-- 標題區塊 -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-4 mb-5">
+                    <div>
+                        <h1 class="display-5 fw-bold mb-3 text-dark">{{ book.title }}</h1>
+                        
+                        <div class="d-flex flex-wrap align-items-center gap-3 text-secondary">
+                            {% if book.category %}
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill fs-6 fw-normal px-3 py-2">
+                                <i class="bi bi-tag-fill me-1"></i>{{ book.category }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if book.read_date %}
+                            <div class="d-flex align-items-center bg-light rounded-pill px-3 py-2 text-dark fs-6">
+                                <i class="bi bi-calendar3 me-2 text-primary"></i>
+                                <span>{{ book.read_date }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if book.rating %}
+                            <div class="d-flex align-items-center bg-warning bg-opacity-10 rounded-pill px-3 py-2 text-warning fs-5 border border-warning border-opacity-25">
+                                {% for i in range(book.rating) %}
+                                <i class="bi bi-star-fill me-1"></i>
+                                {% endfor %}
+                                {% for i in range(5 - book.rating) %}
+                                <i class="bi bi-star text-muted opacity-25 me-1"></i>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('book_bp.edit_book', id=book.id) }}" class="btn btn-primary rounded-pill px-4 shadow-sm fw-medium">
+                            <i class="bi bi-pencil-square me-2"></i>編輯
+                        </a>
+                        <!-- 刪除按鈕觸發 Modal -->
+                        <button type="button" class="btn btn-outline-danger rounded-circle p-2 px-3" data-bs-toggle="modal" data-bs-target="#deleteModal" title="刪除筆記">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 內容區塊 -->
+                <div class="notes-content position-relative mt-5">
+                    <h4 class="fw-bold mb-4 text-dark d-flex align-items-center border-bottom pb-3">
+                        <i class="bi bi-journal-text text-primary me-3 fs-3"></i>讀後心得
+                    </h4>
+                    
+                    <div class="p-4 bg-light rounded-4">
+                        {% if book.notes %}
+                            <div class="fs-5 text-body text-break" style="white-space: pre-wrap; line-height: 1.8; font-family: 'Inter', sans-serif;">{{ book.notes }}</div>
+                        {% else %}
+                            <div class="text-muted fst-italic py-4 text-center">
+                                <i class="bi bi-pen me-2"></i>尚未填寫心得筆記...
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="text-end mt-5 pt-3 border-top text-muted small">
+                    <i class="bi bi-clock-history me-1"></i> 記錄建立於: {{ book.created_at }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 刪除確認 Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-0 pt-4 px-4 pb-0">
+                <h5 class="modal-title fw-bold text-danger fs-4" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>確認刪除
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 py-4 fs-5 text-dark">
+                確定要刪除「<strong>{{ book.title }}</strong>」的筆記嗎？<br>
+                <span class="text-muted fs-6 d-block mt-2"><i class="bi bi-info-circle me-1"></i>此操作無法復原。</span>
+            </div>
+            <div class="modal-footer border-0 pb-4 px-4 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4 fw-medium" data-bs-dismiss="modal">取消</button>
+                <form action="{{ url_for('book_bp.delete_book', id=book.id) }}" method="POST" class="m-0">
+                    <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                        確認刪除
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
